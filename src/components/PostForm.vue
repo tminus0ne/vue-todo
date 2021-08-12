@@ -8,12 +8,14 @@
       type="text"
       placeholder="Description"
     />
-    <button @click="createPost" class="button">Apply post</button>
+    <my-button @click="createPost" class="button">Apply post</my-button>
   </form>
 </template>
 
 <script>
+import MyButton from './UI/MyButton.vue';
 export default {
+  components: { MyButton },
   data() {
     return {
       post: {
@@ -39,19 +41,15 @@ form {
   flex-direction: column;
 }
 
-.button {
-  align-self: center;
-  padding: 10px 15px;
-  margin-top: 15px;
-  background: none;
-  color: teal;
-  border: 1px solid teal;
-}
-
 .input {
   width: 100%;
   border: 1px solid teal;
   padding: 10px 15px;
+  margin-top: 15px;
+}
+
+.button {
+  align-self: flex-end;
   margin-top: 15px;
 }
 </style>
