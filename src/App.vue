@@ -1,33 +1,17 @@
 <template>
   <div class="page">
-    <form @submit.prevent>
-      <h3>Create post</h3>
-      <input
-        v-bind:value="title"
-        @input="title = $event.target.value"
-        class="input"
-        type="text"
-        placeholder="Title"
-      />
-      <input
-        v-bind:value="body"
-        @input="body = $event.target.value"
-        class="input"
-        type="text"
-        placeholder="Description"
-      />
-      <button class="button" @click="createPost">Apply post</button>
-    </form>
-
-    <div class="post" v-for="post in posts">
-      <div><strong>Title:</strong> {{ post.title }}</div>
-      <div><strong>Description:</strong> {{ post.body }}</div>
-    </div>
+    <post-form @create="createPost" />
+    <post-list :posts="posts" />
   </div>
 </template>
 
 <script>
+import PostForm from './components/PostForm.vue';
+import PostList from './components/PostList.vue';
+
 export default {
+  components: { PostForm, PostList },
+
   data() {
     return {
       posts: [
@@ -36,20 +20,12 @@ export default {
         { id: 3, title: 'Post title', body: 'Post description' },
         { id: 4, title: 'Post title', body: 'Post description' },
       ],
-      title: '',
-      body: '',
     };
   },
+
   methods: {
-    createPost() {
-      const newPost = {
-        id: Date.now(),
-        title: this.title,
-        body: this.body,
-      };
-      this.posts.push(newPost);
-      this.title = '';
-      this.body = '';
+    createPost(post) {
+      this.posts.push(post);
     },
   },
 };
@@ -64,32 +40,5 @@ export default {
 
 .page {
   padding: 20px;
-}
-
-.post {
-  padding: 15px;
-  margin-top: 15px;
-  border: 2px solid teal;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.button {
-  align-self: center;
-  padding: 10px 15px;
-  margin-top: 15px;
-  background: none;
-  color: teal;
-  border: 1px solid teal;
-}
-
-.input {
-  width: 100%;
-  border: 1px solid teal;
-  padding: 10px 15px;
-  margin-top: 15px;
 }
 </style>
