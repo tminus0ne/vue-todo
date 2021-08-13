@@ -10,7 +10,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .button {
   padding: 10px 15px;
   background: none;
