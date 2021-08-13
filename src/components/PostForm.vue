@@ -32,6 +32,7 @@ export default {
 form {
   display: flex;
   flex-direction: column;
+  text-align: center;
 }
 
 .button {
