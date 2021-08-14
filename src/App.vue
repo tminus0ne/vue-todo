@@ -15,7 +15,9 @@
       @remove="removePost"
     />
     <div v-else style="text-align: center">Loading...</div>
-    <div class="page__wrapper">
+    <div ref="observer" class="observer"></div>
+
+    <!-- <div class="page__wrapper">
       <my-button
         v-for="pageNumber in totalPages"
         :key="pageNumber"
@@ -27,7 +29,7 @@
       >
         {{ pageNumber }}
       </my-button>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -88,22 +90,55 @@ export default {
           response.headers['x-total-count'] / this.limit,
         );
         this.posts = response.data;
+      } catch (error) {
+        alert('Error');
+      } finally {
         this.isPostsLoading = false;
+      }
+    },
+    async loadMorePosts() {
+      try {
+        this.page += 1;
+        const response = await axios.get(
+          'https://jsonplaceholder.typicode.com/posts',
+          {
+            params: {
+              _page: this.page,
+              _limit: this.limit,
+            },
+          },
+        );
+        this.totalPages = Math.ceil(
+          response.headers['x-total-count'] / this.limit,
+        );
+        this.posts = [...this.posts, ...response.data];
       } catch (error) {
         alert('Error');
       }
     },
-    changePage(pageNumber) {
-      this.page = pageNumber;
-    },
+    // changePage(pageNumber) {
+    //   this.page = pageNumber;
+    // },
   },
   mounted() {
     this.fetchPosts();
+
+    const options = {
+      rootMargin: '0px',
+      threshold: 1.0,
+    };
+    const callback = (entries, observer) => {
+      if (entries[0].isIntersecting && this.page < this.totalPages) {
+        this.loadMorePosts();
+      }
+    };
+    const observer = new IntersectionObserver(callback, options);
+    observer.observe(this.$refs.observer);
   },
   watch: {
-    page() {
-      this.fetchPosts();
-    },
+    // page() {
+    //   this.fetchPosts();
+    // },
   },
   computed: {
     sortedPosts() {
@@ -148,5 +183,9 @@ export default {
 
 .current__page {
   border: 4px solid teal;
+}
+
+.observer {
+  height: 30px;
 }
 </style>
