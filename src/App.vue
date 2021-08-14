@@ -1,7 +1,10 @@
 <template>
   <div class="page">
     <h1>Page with posts</h1>
-    <my-button @click="showModal" style="margin: 15px 0">Create post</my-button>
+    <div class="app__buttons">
+      <my-button @click="showModal">Create post</my-button>
+      <my-select v-model="selectedSort" :options="sortOptions" />
+    </div>
     <my-modal v-model:show="modalVisible">
       <post-form @create="createPost" />
     </my-modal>
@@ -11,20 +14,27 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 import PostForm from './components/PostForm.vue';
 import PostList from './components/PostList.vue';
 import MyButton from './components/UI/MyButton.vue';
 import MyModal from './components/UI/MyModal.vue';
-import axios from 'axios';
+import MySelect from './components/UI/MySelect.vue';
 
 export default {
-  components: { PostForm, PostList, MyModal, MyButton },
+  components: { PostForm, PostList, MyModal, MyButton, MySelect },
 
   data() {
     return {
       posts: [],
       modalVisible: false,
       isPostsLoading: false,
+      selectedSort: '',
+      sortOptions: [
+        { value: 'title', name: 'Sort by title' },
+        { value: 'body', name: 'Sort by description' },
+      ],
     };
   },
 
@@ -67,5 +77,11 @@ export default {
 
 .page {
   padding: 20px;
+}
+
+.app__buttons {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
 }
 </style>
