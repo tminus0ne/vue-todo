@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="main">
     <h1>Page with posts</h1>
     <my-input v-model="searchQuery" placeholder="Enter search phrase..." />
     <div class="app__buttons">
@@ -15,6 +15,19 @@
       @remove="removePost"
     />
     <div v-else style="text-align: center">Loading...</div>
+    <div class="page__wrapper">
+      <my-button
+        v-for="pageNumber in totalPages"
+        :key="pageNumber"
+        class="page"
+        :class="{
+          current__page: page === pageNumber,
+        }"
+        @click="changePage(pageNumber)"
+      >
+        {{ pageNumber }}
+      </my-button>
+    </div>
   </div>
 </template>
 
@@ -42,6 +55,9 @@ export default {
         { value: 'body', name: 'Sort by description' },
       ],
       searchQuery: '',
+      page: 1,
+      limit: 10,
+      totalPages: 0,
     };
   },
 
@@ -60,7 +76,16 @@ export default {
       try {
         this.isPostsLoading = true;
         const response = await axios.get(
-          'https://jsonplaceholder.typicode.com/posts?_limit=10',
+          'https://jsonplaceholder.typicode.com/posts',
+          {
+            params: {
+              _page: this.page,
+              _limit: this.limit,
+            },
+          },
+        );
+        this.totalPages = Math.ceil(
+          response.headers['x-total-count'] / this.limit,
         );
         this.posts = response.data;
         this.isPostsLoading = false;
@@ -68,11 +93,18 @@ export default {
         alert('Error');
       }
     },
+    changePage(pageNumber) {
+      this.page = pageNumber;
+    },
   },
   mounted() {
     this.fetchPosts();
   },
-  watch: {},
+  watch: {
+    page() {
+      this.fetchPosts();
+    },
+  },
   computed: {
     sortedPosts() {
       return [...this.posts].sort((post1, post2) =>
@@ -95,7 +127,7 @@ export default {
   box-sizing: border-box;
 }
 
-.page {
+.main {
   padding: 20px;
 }
 
@@ -103,5 +135,18 @@ export default {
   display: flex;
   justify-content: space-between;
   margin: 15px 0;
+}
+
+.page__wrapper {
+  display: flex;
+  margin-top: 15px;
+}
+
+.page {
+  margin-right: 10px;
+}
+
+.current__page {
+  border: 4px solid teal;
 }
 </style>
