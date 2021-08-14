@@ -1,6 +1,7 @@
 <template>
   <div class="page">
     <h1>Page with posts</h1>
+    <my-input v-model="searchQuery" placeholder="Enter search phrase..." />
     <div class="app__buttons">
       <my-button @click="showModal">Create post</my-button>
       <my-select v-model="selectedSort" :options="sortOptions" />
@@ -10,7 +11,7 @@
     </my-modal>
     <post-list
       v-if="!isPostsLoading"
-      :posts="sortedPosts"
+      :posts="searchedAndSortedPosts"
       @remove="removePost"
     />
     <div v-else style="text-align: center">Loading...</div>
@@ -25,9 +26,10 @@ import PostList from './components/PostList.vue';
 import MyButton from './components/UI/MyButton.vue';
 import MyModal from './components/UI/MyModal.vue';
 import MySelect from './components/UI/MySelect.vue';
+import MyInput from './components/UI/MyInput.vue';
 
 export default {
-  components: { PostForm, PostList, MyModal, MyButton, MySelect },
+  components: { PostForm, PostList, MyModal, MyButton, MySelect, MyInput },
 
   data() {
     return {
@@ -39,6 +41,7 @@ export default {
         { value: 'title', name: 'Sort by title' },
         { value: 'body', name: 'Sort by description' },
       ],
+      searchQuery: '',
     };
   },
 
@@ -74,6 +77,11 @@ export default {
     sortedPosts() {
       return [...this.posts].sort((post1, post2) =>
         post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]),
+      );
+    },
+    searchedAndSortedPosts() {
+      return this.sortedPosts.filter((post) =>
+        post.title.toLowerCase().includes(this.searchQuery.toLowerCase()),
       );
     },
   },
