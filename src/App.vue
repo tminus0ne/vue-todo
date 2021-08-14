@@ -8,7 +8,11 @@
     <my-modal v-model:show="modalVisible">
       <post-form @create="createPost" />
     </my-modal>
-    <post-list v-if="!isPostsLoading" :posts="posts" @remove="removePost" />
+    <post-list
+      v-if="!isPostsLoading"
+      :posts="sortedPosts"
+      @remove="removePost"
+    />
     <div v-else style="text-align: center">Loading...</div>
   </div>
 </template>
@@ -64,6 +68,14 @@ export default {
   },
   mounted() {
     this.fetchPosts();
+  },
+  watch: {},
+  computed: {
+    sortedPosts() {
+      return [...this.posts].sort((post1, post2) =>
+        post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]),
+      );
+    },
   },
 };
 </script>
