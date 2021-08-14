@@ -1,7 +1,11 @@
 <template>
   <div>
     <h1>Page with posts</h1>
-    <my-input v-model="searchQuery" placeholder="Enter search phrase..." />
+    <my-input
+      v-focus
+      v-model="searchQuery"
+      placeholder="Enter search phrase..."
+    />
     <div class="app__buttons">
       <my-button @click="showModal">Create post</my-button>
       <my-select v-model="selectedSort" :options="sortOptions" />
@@ -15,7 +19,7 @@
       @remove="removePost"
     />
     <div v-else style="text-align: center">Loading...</div>
-    <div ref="observer" class="observer"></div>
+    <div v-intersection="loadMorePosts" class="observer"></div>
 
     <!-- <div class="page__wrapper">
       <my-button
@@ -123,17 +127,17 @@ export default {
   mounted() {
     this.fetchPosts();
 
-    const options = {
-      rootMargin: '0px',
-      threshold: 1.0,
-    };
-    const callback = (entries, observer) => {
-      if (entries[0].isIntersecting && this.page < this.totalPages) {
-        this.loadMorePosts();
-      }
-    };
-    const observer = new IntersectionObserver(callback, options);
-    observer.observe(this.$refs.observer);
+    // const options = {
+    //   rootMargin: '0px',
+    //   threshold: 1.0,
+    // };
+    // const callback = (entries, observer) => {
+    //   if (entries[0].isIntersecting && this.page < this.totalPages) {
+    //     this.loadMorePosts();
+    //   }
+    // };
+    // const observer = new IntersectionObserver(callback, options);
+    // observer.observe(this.$refs.observer);
   },
   watch: {
     // page() {
