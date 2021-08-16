@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Page with posts</h1>
+    <h1>Page with posts using Vuex</h1>
     <my-input
       v-focus
       :model-value="searchQuery"

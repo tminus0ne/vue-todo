@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Page with posts</h1>
+    <h1>Page with posts using Composition API</h1>
     <my-input
       v-focus
       v-model="searchQuery"
